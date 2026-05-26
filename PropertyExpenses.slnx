@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DBConnection/DBConnection.csproj" />
+  <Project Path="PropertyExpensesUI/PropertyExpensesUI.csproj" Id="2701f844-16e5-4581-984f-093f011b8349" />
+</Solution>

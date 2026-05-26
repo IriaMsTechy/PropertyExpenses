@@ -1,0 +1,158 @@
+﻿@page "/"
+@using Services
+@inject IPropertyService PropertyService
+
+<PageTitle>Home</PageTitle>
+
+<h1>Property Management</h1>
+
+List of Properties
+
+<MudDataGrid @ref="_propertyGrid" T="PropertyModel" Items="@_properties" ReadOnly="@_readOnly"
+             EditMode="DataGridEditMode.Form"
+             StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+             Bordered="true" Dense="true" EditTrigger="@(_editTriggerRowClick ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Property List</MudText>
+        <MudSpacer />
+        <MudButtonGroup Class="ma-0 pa-0" Color="Color.Success" Variant="Variant.Filled">
+            <MudButton OnClick="NewItemAsync">
+                Add New Property
+            </MudButton>
+        </MudButtonGroup>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.PostCode" Title="PostCode" Editable="true" />
+        <PropertyColumn Property="x => x.Address" />
+        <PropertyColumn Property="x => x.City" />
+        <PropertyColumn Property="x => x.NumberOfBedrooms" />
+        <PropertyColumn Property="x => x.NumberOfBathrooms" />
+        <PropertyColumn Property="x => x.NumberOfCommonRooms"/>
+        <PropertyColumn Property="x => x.HasParking"/>
+        <PropertyColumn Property="x => x.FactorMonthlyCost" />
+        <TemplateColumn Hidden="@_readOnly" CellClass="d-flex justify-between">
+            <CellTemplate>
+                @if ( !_editTriggerRowClick)
+                {
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                }
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => DeleteItem(context.Item))" />
+            </CellTemplate>
+
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+<MudExpansionPanels Style="flex:1">
+    <MudExpansionPanel Text="Show Events">
+        @foreach (var message in _events)
+        {
+            <MudText Typo="@Typo.body2">@message</MudText>
+        }
+        @if (_events.Count > 0)
+        {
+            <div class="d-flex">
+                <MudSpacer />
+                <MudButton Class="mt-3" ButtonType="ButtonType.Button" Variant="Variant.Filled" OnClick="@(() => _events.Clear())">Clear</MudButton>
+            </div>
+        }
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+@code{
+    private IEnumerable<PropertyModel> _propertyMasterList = [];
+    private List<PropertyModel> _properties = [];
+    private bool _readOnly;
+    private List<string> _events = new();
+    private bool _editTriggerRowClick;
+    private MudDataGrid<PropertyModel> _propertyGrid = default!;
+    private List<string> errors = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _properties = (await PropertyService.GetAllProperties()).ToList();
+        _propertyMasterList = _properties.Take(4).ToList();
+    }
+
+    private async Task NewItemAsync()
+    {
+        var elem = new PropertyModel();
+        await _propertyGrid.SetEditingItemAsync(elem);
+
+        if (elem != null) 
+        { 
+            _properties.Add(elem); 
+        }
+    }
+
+    private async Task DeleteItem(PropertyModel item)
+    {
+        _properties.Remove(item);
+        try
+        {
+            await PropertyService.RemoveProperty(item);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error removing property from database: {ex.Message}" );
+            errors.Add(ex.Message);
+        }
+    }
+
+    // events
+    // events
+    private async Task StartedEditingItem(PropertyModel item)
+    {
+        _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    private void CanceledEditingItem(PropertyModel item)
+    {
+        // update code for backing data here if needed
+        _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    private async Task<DataGridEditFormAction> CommittedItemChanges(PropertyModel item)
+    {
+        // update code for the backing data here
+        if (string.IsNullOrWhiteSpace(item.PostCode)) // new item
+        {
+            bool cellMode = _properties.Remove(item); // for cell mode
+            if (cellMode)
+            {
+                _properties.Insert(0, item);
+            }
+            else
+            {
+                _properties.Add(item);
+            }
+        }
+        if (_properties.Select(p => p.Id).Contains(item.Id))
+        {
+            try
+            {
+                var updatedPproperty = await PropertyService.UpdateProperty(item);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating property: {ex.Message}");
+                errors.Add(ex.Message);
+            }
+        }
+        else
+        {
+            try
+            {
+                var newProperty = await PropertyService.AddProperty(item);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding property: {ex.Message}");  
+                errors.Add(ex.Message);
+            }
+        }
+        _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+
+        return DataGridEditFormAction.Close;
+    }
+    }
