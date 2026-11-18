@@ -7,7 +7,24 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+<MudPaper Width="250" Class="py-3" Elevation="0">
+    <MudNavMenu Dense>
+        <MudNavLink Href="" >
+            <MudIcon Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" />
+            <span>Home</span>
+        </MudNavLink>
+        <MudNavLink Href="PropertyOffers" Match="NavLinkMatch.All">
+            <MudIcon Icon="@Icons.Material.Filled.AddBox" />
+            <span>Property Offers</span>
+        </MudNavLink>
+        <MudNavLink Href="counter" Match="NavLinkMatch.All">
+            <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+            <span>Counter</span>
+        </MudNavLink>
+    </MudNavMenu>
+</MudPaper>
+
+@* <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
@@ -15,18 +32,19 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="PropertyOffers">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Property Offers
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+
 
     </nav>
-</div>
+</div> *@
 
 @code {
     private bool collapseNavMenu = true;

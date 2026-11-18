@@ -7,12 +7,15 @@ namespace DBConnection.Models
     public class PropertyContext : DbContext
     {
         private readonly IConfiguration _config;
+        public DbSet<Income> PropertyIncome { get; set; }
         public DbSet<Mortgage> Mortgage { get; set; }
-        public DbSet<Offers> Offers { get; set; }
-        public DbSet<PropertyExpense> PropertyExpense { get; set; }
-        public DbSet<CompanyExpense> CompanyExpense { get; set; }
-        public DbSet<PropertyModel> PropertyModel { get; set; }
+        public DbSet<PropertyOffer> PropertyOffers { get; set; }
+        public DbSet<PropertyExpense> PropertyExpenses { get; set; }
+        public DbSet<CompanyExpense> CompanyExpenses { get; set; }
+        public DbSet<PropertyModel> PropertyModels { get; set; }
         public DbSet<PropertySaleData> PropertySaleData { get; set; }
+        public DbSet<PropertyValuation> PropertyValuations { get; set; }
+        public DbSet<Mortgage> Mortgages { get; set; }
 
         public PropertyContext (DbContextOptions<PropertyContext> options, IConfiguration config) : base(options)
         {

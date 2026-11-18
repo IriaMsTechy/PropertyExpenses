@@ -10,6 +10,7 @@
         public bool CompletedSale { get; set; }
         public string RejectionReason { get; set; }
         public string FailureReason { get; set; }
+        virtual public PropertyValuation PropertyValuation { get; set; }
         public PropertyOffer()
         {
             Id = Guid.NewGuid();
@@ -19,6 +20,7 @@
             CompletedSale = false;
             RejectionReason = string.Empty;
             FailureReason = string.Empty;
+            PropertyValuation = new PropertyValuation();
         }
     }
 }

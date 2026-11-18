@@ -15,7 +15,10 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PropertyContext> (opt => opt.UseSqlServer(
         builder.Configuration.GetConnectionString("PropertyConnection")));
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo { Title = "DB Connection API", Version = "v1" });
+});
 
 //if (builder.Environment.IsDevelopment())
 //{
@@ -40,7 +43,10 @@ var app = builder.Build();
     {
     //app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("../swagger/v1/swagger.json", "DBConnection v1");
+    });
 
 }
 

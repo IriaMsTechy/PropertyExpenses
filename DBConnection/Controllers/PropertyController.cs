@@ -17,7 +17,7 @@ namespace DBConnection.Controllers
         [HttpGet("GetProperty")]
         public async Task<PropertyModel?> GetProperty(Guid id)
         {
-            return await _propertyDbContext.PropertyModel
+            return await _propertyDbContext.PropertyModels
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -26,7 +26,16 @@ namespace DBConnection.Controllers
         public async Task <IEnumerable<PropertyModel>> GetAllProperties()
         {
             return await _propertyDbContext
-                .PropertyModel
+                .PropertyModels
+                .ToListAsync();
+        }
+        [HttpGet("GetOwnedPropertyList")]
+        [ProducesResponseType<List<PropertyModel>>(StatusCodes.Status200OK)]
+        public async Task<IEnumerable<PropertyModel>> GetOwnedProperties()
+        {
+            return await _propertyDbContext
+                .PropertyModels
+                .Where(p => p.Owned)
                 .ToListAsync();
         }
 
@@ -34,7 +43,7 @@ namespace DBConnection.Controllers
         public async Task<PropertyModel> PostProperty(PropertyModel newProperty)
         {
             var propertySaved = await _propertyDbContext
-                .PropertyModel
+                .PropertyModels
                 .AddAsync(newProperty);
             await _propertyDbContext.SaveChangesAsync();
             return propertySaved.Entity;
@@ -42,7 +51,7 @@ namespace DBConnection.Controllers
         [HttpPut("update")]
         public async Task<PropertyModel> UpdatePropertyModel (PropertyModel updatedPropertyModel)
         {
-            _propertyDbContext.PropertyModel.Update(updatedPropertyModel);
+            _propertyDbContext.PropertyModels.Update(updatedPropertyModel);
              await _propertyDbContext.SaveChangesAsync();
              return updatedPropertyModel;
         }
@@ -50,7 +59,7 @@ namespace DBConnection.Controllers
         public async Task DeleteProperty(Guid id)
         {
             await _propertyDbContext
-                .PropertyModel
+                .PropertyModels
                 .Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 

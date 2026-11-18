@@ -10,9 +10,12 @@
         public int NumberOfBathrooms { get; set; }  
         public int NumberOfCommonRooms { get; set; }
         public bool HasParking { get; set; }
+        public bool Owned { get; set; }
         public double FactorMonthlyCost { get; set; }
-
+        public List<PropertyOffer> PropertyOffers { get; set; }
         public List<PropertyExpense> PropertyExpenses { get; set; }
+        public List<PropertyValuation> PropertyValuations { get; set; }
+        
 
         public PropertyModel()
         {
@@ -25,7 +28,10 @@
             NumberOfCommonRooms = 0;
             HasParking = false;
             FactorMonthlyCost = 0;
+            Owned = false;
+            PropertyOffers = new List<PropertyOffer>();
             PropertyExpenses = new List<PropertyExpense>();
+            PropertyValuations = new List<PropertyValuation>();
         }
     }
 }
