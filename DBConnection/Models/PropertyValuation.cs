@@ -7,6 +7,10 @@
         public double ValuationAmount { get; set; }
         public string ValuationAgent { get; set; }
 
+        public Guid PropertyId { get; set; }
+        public PropertyModel Property { get; set; }
+
+
         public PropertyValuation()
         {
             Id = Guid.NewGuid();

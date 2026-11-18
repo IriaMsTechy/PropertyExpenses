@@ -29,5 +29,16 @@ namespace DBConnection.Models
             optionsBuilder.UseSqlServer(_config["PropertyDBConectionString"]);
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PropertyOffer>()
+                .HasOne(po => po.PropertyValuation)
+                .WithMany()
+                .HasForeignKey(po => po.PropertyValuationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
