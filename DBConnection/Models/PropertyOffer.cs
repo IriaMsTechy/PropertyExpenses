@@ -4,6 +4,7 @@
     {
         public Guid Id { get; set; }
         public Guid PropertyId { get; set; }
+        public Guid PropertyValuationId { get; set; }
         public double OfferPrice { get; set; }  
         public double SalePrice { get; set; }
         public bool AcceptedOffer { get; set; }
@@ -21,8 +22,6 @@
             CompletedSale = false;
             RejectionReason = string.Empty;
             FailureReason = string.Empty;
-            PropertyValuation = new PropertyValuation();
-            Property = new PropertyModel();
         }
     }
 }

@@ -22,22 +22,84 @@ namespace DBConnection.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DBConnection.Models.CompanyExpense", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CompanyExpenseType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpenseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PaidDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyExpenses");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.Income", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EffectiveDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IncomeType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("PropertyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("PropertyIncome");
+                });
+
             modelBuilder.Entity("DBConnection.Models.Mortgage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("EndOfPromotionalRateDate")
+                    b.Property<double>("AnnualPromotionalInterestRate")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("InterestRate")
-                        .HasColumnType("float");
+                    b.Property<DateTime>("EndOfPromotionalRateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("PrincipalAmount")
                         .HasColumnType("float");
 
                     b.Property<Guid>("PropertyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PropertyModelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartDate")
@@ -48,34 +110,9 @@ namespace DBConnection.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropertyModelId");
+
                     b.ToTable("Mortgage");
-                });
-
-            modelBuilder.Entity("DBConnection.Models.Offers", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsAccepted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("OfferDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("OfferPrice")
-                        .HasColumnType("float");
-
-                    b.Property<Guid>("PropertyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ReasonDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("DBConnection.Models.PropertyExpense", b =>
@@ -86,6 +123,10 @@ namespace DBConnection.Migrations
 
                     b.Property<double>("Amount")
                         .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpenseDate")
                         .HasColumnType("datetime2");
@@ -99,14 +140,16 @@ namespace DBConnection.Migrations
                     b.Property<DateTime>("PaidDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PropertyId")
+                    b.Property<Guid?>("PropertyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MortgageId");
 
-                    b.ToTable("PropertyExpense");
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("PropertyExpenses");
                 });
 
             modelBuilder.Entity("DBConnection.Models.PropertyModel", b =>
@@ -138,13 +181,57 @@ namespace DBConnection.Migrations
                     b.Property<int>("NumberOfCommonRooms")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Owned")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PostCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PropertyModel");
+                    b.ToTable("PropertyModels");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.PropertyOffer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("AcceptedOffer")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CompletedSale")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FailureReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("OfferPrice")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PropertyValuationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RejectionReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("SalePrice")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.HasIndex("PropertyValuationId");
+
+                    b.ToTable("PropertyOffers");
                 });
 
             modelBuilder.Entity("DBConnection.Models.PropertySaleData", b =>
@@ -170,19 +257,127 @@ namespace DBConnection.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropertyId");
+
                     b.ToTable("PropertySaleData");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.PropertyValuation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ValuationAgent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("ValuationAmount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("ValuationDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("PropertyValuations");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.Income", b =>
+                {
+                    b.HasOne("DBConnection.Models.PropertyModel", "Property")
+                        .WithMany("Incomes")
+                        .HasForeignKey("PropertyId");
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.Mortgage", b =>
+                {
+                    b.HasOne("DBConnection.Models.PropertyModel", null)
+                        .WithMany("Mortgages")
+                        .HasForeignKey("PropertyModelId");
                 });
 
             modelBuilder.Entity("DBConnection.Models.PropertyExpense", b =>
                 {
-                    b.HasOne("DBConnection.Models.Mortgage", null)
+                    b.HasOne("DBConnection.Models.Mortgage", "Mortgage")
                         .WithMany("MortgagePayments")
                         .HasForeignKey("MortgageId");
+
+                    b.HasOne("DBConnection.Models.PropertyModel", "Property")
+                        .WithMany("PropertyExpenses")
+                        .HasForeignKey("PropertyId");
+
+                    b.Navigation("Mortgage");
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.PropertyOffer", b =>
+                {
+                    b.HasOne("DBConnection.Models.PropertyModel", "Property")
+                        .WithMany("PropertyOffers")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DBConnection.Models.PropertyValuation", "PropertyValuation")
+                        .WithMany()
+                        .HasForeignKey("PropertyValuationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+
+                    b.Navigation("PropertyValuation");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.PropertySaleData", b =>
+                {
+                    b.HasOne("DBConnection.Models.PropertyModel", "Property")
+                        .WithMany("PropertySaleData")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.PropertyValuation", b =>
+                {
+                    b.HasOne("DBConnection.Models.PropertyModel", "Property")
+                        .WithMany("PropertyValuations")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("DBConnection.Models.Mortgage", b =>
                 {
                     b.Navigation("MortgagePayments");
+                });
+
+            modelBuilder.Entity("DBConnection.Models.PropertyModel", b =>
+                {
+                    b.Navigation("Incomes");
+
+                    b.Navigation("Mortgages");
+
+                    b.Navigation("PropertyExpenses");
+
+                    b.Navigation("PropertyOffers");
+
+                    b.Navigation("PropertySaleData");
+
+                    b.Navigation("PropertyValuations");
                 });
 #pragma warning restore 612, 618
         }
