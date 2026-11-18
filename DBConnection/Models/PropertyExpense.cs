@@ -4,10 +4,14 @@
     {
         public Guid? PropertyId { get; set; }
         public Models.Enums.PropertyExpenseType ExpenseType { get; set; }
+        public Guid? MortgageId { get; set; }
+        public Mortgage? Mortgage { get; set; }
+        public PropertyModel Property { get; set; }
         public PropertyExpense() : base()
         {
-            PropertyId = Guid.Empty;
             ExpenseType = Models.Enums.PropertyExpenseType.Maintenance;
+            Property = new PropertyModel();
+            Mortgage = null;
         }
     }
 }

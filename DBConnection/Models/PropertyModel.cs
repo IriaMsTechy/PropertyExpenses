@@ -12,10 +12,12 @@
         public bool HasParking { get; set; }
         public bool Owned { get; set; }
         public double FactorMonthlyCost { get; set; }
-        public List<PropertyOffer> PropertyOffers { get; set; }
-        public List<PropertyExpense> PropertyExpenses { get; set; }
-        public List<PropertyValuation> PropertyValuations { get; set; }
-        
+        public List<PropertyOffer>? PropertyOffers { get; set; }
+        public List<PropertyExpense>? PropertyExpenses { get; set; }
+        public List<PropertyValuation>? PropertyValuations { get; set; }
+        public List<PropertySaleData>? PropertySaleData { get; set; }
+        public List<Mortgage>? Mortgages { get; set; }
+        public List<Income> Incomes { get; set; }
 
         public PropertyModel()
         {
@@ -32,6 +34,7 @@
             PropertyOffers = new List<PropertyOffer>();
             PropertyExpenses = new List<PropertyExpense>();
             PropertyValuations = new List<PropertyValuation>();
+            Incomes = new List<Income>();
         }
     }
 }
